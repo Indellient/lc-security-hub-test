@@ -4,6 +4,19 @@ provider "aws" {
   region     = var.region
 }
 
+module "terraform_state_backend" {
+  source     = "cloudposse/tfstate-backend/aws"
+
+  namespace  = "lc"
+  stage      = "dev"
+  name       = "security-hub-test"
+  attributes = ["state"]
+
+  terraform_backend_config_file_path = "."
+  terraform_backend_config_file_name = "backend.tf"
+  force_destroy                      = false
+ }
+
 data "aws_caller_identity" "current" {
 }
 
@@ -14,11 +27,14 @@ resource "aws_iam_user" "admin" {
 module "secure_baseline" {
   source  = "nozaq/secure-baseline/aws"
 
-  audit_log_bucket_name           = var.audit_s3_bucket_name
-  aws_account_id                  = data.aws_caller_identity.current.account_id
-  region                          = var.region
-  support_iam_role_principal_arns = [aws_iam_user.admin.arn]
-  target_regions                  = ["us-east-1", "ca-central-1"]
+  account_type                         = "master"
+  member_accounts                      = []
+  audit_log_bucket_name                = var.audit_s3_bucket_name
+  aws_account_id                       = data.aws_caller_identity.current.account_id
+  region                               = var.region
+  support_iam_role_principal_arns      = [aws_iam_user.admin.arn]
+  target_regions                       = ["us-east-1", "ca-central-1"]
+  guardduty_disable_email_notification = true
 
   audit_log_bucket_force_destroy = true
 
