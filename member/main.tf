@@ -29,7 +29,7 @@ data "aws_organizations_organization" "org" {}
 
 module "secure_baseline" {
   source  = "nozaq/secure-baseline/aws"
-  version = "0.27.0"
+  version = "0.26.0"
 
   account_type                         = "member"
   master_account_id                    = data.aws_organizations_organization.org.master_account_id

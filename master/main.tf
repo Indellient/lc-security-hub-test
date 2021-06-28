@@ -27,7 +27,7 @@ resource "aws_iam_user" "admin" {
 
 module "secure_baseline" {
   source  = "nozaq/secure-baseline/aws"
-  version = "0.27.0"
+  version = "0.26.0"
 
   account_type                         = "master"
   member_accounts                      = var.member_accounts
