@@ -9,7 +9,7 @@ module "terraform_state_backend" {
 
   namespace  = "lc"
   stage      = "dev"
-  name       = "security-hub-test"
+  name       = "master-test"
   attributes = ["state"]
 
   terraform_backend_config_file_path = "."
