@@ -6,6 +6,7 @@ provider "aws" {
 
 module "terraform_state_backend" {
   source     = "cloudposse/tfstate-backend/aws"
+  version    = "0.33.0"
 
   namespace  = "lc"
   stage      = "dev"
@@ -28,6 +29,7 @@ data "aws_organizations_organization" "org" {}
 
 module "secure_baseline" {
   source  = "nozaq/secure-baseline/aws"
+  version = "0.27.0"
 
   account_type                         = "member"
   master_account_id                    = data.aws_organizations_organization.org.master_account_id
