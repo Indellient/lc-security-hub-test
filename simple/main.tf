@@ -25,8 +25,6 @@ resource "aws_iam_user" "admin" {
   name = "admin"
 }
 
-data "aws_organizations_organization" "org" {}
-
 module "secure_baseline" {
   source  = "nozaq/secure-baseline/aws"
   version = "0.26.0"
@@ -37,7 +35,7 @@ module "secure_baseline" {
   support_iam_role_principal_arns      = [aws_iam_user.admin.arn]
   target_regions                       = ["us-east-1", "ca-central-1"]
 
-  audit_log_bucket_force_destroy = true
+  audit_log_bucket_force_destroy       = true
 
   providers = {
     aws                = aws
