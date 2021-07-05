@@ -8,7 +8,7 @@ variable "secret_key" {
 
 variable "audit_s3_bucket_name" {
   description = "The name of the S3 bucket to store various audit logs."
-  default     = "lc-audit-test"
+  default     = "lc-audit-master"
 }
 
 variable "region" {
