@@ -10,7 +10,7 @@ module "terraform_state_backend" {
 
   namespace  = "lc"
   stage      = "dev"
-  name       = "member-test"
+  name       = "member"
   attributes = ["state"]
 
   terraform_backend_config_file_path = "."
@@ -33,7 +33,6 @@ module "secure_baseline" {
 
   account_type                         = "member"
   master_account_id                    = data.aws_organizations_organization.org.master_account_id
-  use_external_audit_log_bucket        = true
   audit_log_bucket_name                = var.audit_s3_bucket_name
   aws_account_id                       = data.aws_caller_identity.current.account_id
   region                               = var.region
