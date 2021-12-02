@@ -14,12 +14,18 @@ terraform apply
 
 ## AWS Organization Setup
 
+* The `exampleOrg` folder contains terraform setup for an example AWS Organization's accounts (for use with `master` and `member`)
 * The `master` folder contains terraform setup for the management account of the AWS Organization
 * The `member` folder contains terraform setup for each member account of the AWS Organization
 
-Both folders terraform setup is being done remotely using `terraform_state_backend` and individual S3 buckets
+All folders terraform setup is being done remotely using `terraform_state_backend` and individual S3 buckets
 
 To run this:
+* For `exampleOrg`:
+    ```
+    cd exampleOrg
+    terraform apply
+    ```
 * For `master`:
     ```
     cd master

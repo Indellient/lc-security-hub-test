@@ -1,11 +1,3 @@
-variable "access_key" {
-  default = ""
-}
-
-variable "secret_key" {
-  default = ""
-}
-
 variable "audit_s3_bucket_name" {
   description = "The name of the S3 bucket to store various audit logs."
   default     = "lc-audit-master"
@@ -16,7 +8,12 @@ variable "region" {
   default     = "us-east-1"
 }
 
-variable "member_accounts" {
-  description = "A list of AWS account IDs."
-  default     = []
+variable "exception_member_accounts" {
+  description = "A list of AWS member account IDs to NOT actively monitor."
+  default     = ["Sandbox"]
+}
+
+variable "sns_subscription_email" {
+  description = "Subscription email to send SNS topics notifications to"
+  type        = string
 }

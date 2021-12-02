@@ -1,12 +1,10 @@
 provider "aws" {
-  access_key = var.access_key
-  secret_key = var.secret_key
-  region     = var.region
+  region = var.region
 }
 
 module "terraform_state_backend" {
-  source     = "cloudposse/tfstate-backend/aws"
-  version    = "0.33.0"
+  source  = "cloudposse/tfstate-backend/aws"
+  version = "0.33.0"
 
   namespace  = "lc"
   stage      = "dev"
@@ -16,7 +14,7 @@ module "terraform_state_backend" {
   terraform_backend_config_file_path = "."
   terraform_backend_config_file_name = "backend.tf"
   force_destroy                      = false
- }
+}
 
 data "aws_caller_identity" "current" {
 }
@@ -25,20 +23,22 @@ resource "aws_iam_user" "admin" {
   name = "admin"
 }
 
+data "aws_organizations_organization" "org" {
+}
+
 module "secure_baseline" {
   source  = "nozaq/secure-baseline/aws"
   version = "0.26.0"
 
   account_type                         = "master"
-  member_accounts                      = var.member_accounts
+  member_accounts                      = [for a in data.aws_organizations_organization.org.non_master_accounts : zipmap(["account_id", "email"], [a.id, a.email]) if !contains(var.exception_member_accounts, a.name)]
   audit_log_bucket_name                = var.audit_s3_bucket_name
   aws_account_id                       = data.aws_caller_identity.current.account_id
   region                               = var.region
   support_iam_role_principal_arns      = [aws_iam_user.admin.arn]
   target_regions                       = ["us-east-1", "ca-central-1"]
   guardduty_disable_email_notification = true
-
-  audit_log_bucket_force_destroy = true
+  audit_log_bucket_force_destroy       = true
 
   providers = {
     aws                = aws
@@ -60,4 +60,11 @@ module "secure_baseline" {
     aws.us-west-1      = aws.us-west-1
     aws.us-west-2      = aws.us-west-2
   }
+}
+
+# Note: This will need to be confirmed. Unconfirmed emails cannot be destroyed via TF
+resource "aws_sns_topic_subscription" "cis_alarms_email_subscription" {
+  topic_arn = module.secure_baseline.alarm_sns_topic[0].arn
+  protocol  = "email"
+  endpoint  = var.sns_subscription_email
 }
